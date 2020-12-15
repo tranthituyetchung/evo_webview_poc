@@ -32,16 +32,17 @@ class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMess
         webView = WKWebView()
         webView.navigationDelegate = self
         view = webView
-        let url = URL(string: "http://127.0.0.1:3000/")!
+        let url = URL(string: "http://127.0.0.1:3000/")! // URL of local website
         webView.load(URLRequest(url: url))
         webView.allowsBackForwardNavigationGestures = true
-        
+        // Setup for receive message
         let contentController = self.webView.configuration.userContentController
         contentController.add(self, name: "toggleMessageHandler")
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        // send token to website when first init
         webView!.evaluateJavaScript("receiveToken('\(userToken!)')", completionHandler: nil)
     }
     
@@ -49,11 +50,13 @@ class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMess
         super.viewWillDisappear(animated)
         if isBeingDismissed {
             print("---Clear token---")
+            // clear token when dismiss
             webView!.evaluateJavaScript("deleteToken()", completionHandler: nil)
         }
     }
     
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        // listener
         guard let dict = message.body as? [String : AnyObject] else {
             return
         }
