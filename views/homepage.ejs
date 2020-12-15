@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Home</title>
+  </head>
+  <body>
+ 
+     <h1>This is Home Page</h1>
+     <div>
+     <label id="tokenlabel"></label>
+    </div>
+</br>
+    <div>
+        <Button onclick = "logOut()">Logout</Button>      
+        <Button onclick="requestImagePermission()">Upload Photo</Button>
+    </div>
+    
+  </body>
+</html>
+<script>
+    var token = ""
+    function deleteToken(){
+        print("delete Token",this.token)
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
+            window.webkit.messageHandlers.toggleMessageHandler.postMessage({
+                "type": "deletetoken",
+                "msg" : "Delete token successfully",
+
+            });
+        }
+    }
+    function receiveToken(receiveToken){
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
+            window.webkit.messageHandlers.toggleMessageHandler.postMessage({
+                "type": "receiveToken",
+                "msg" : "Receive Token",
+
+            });
+            this.token = receiveToken
+        }
+        document.getElementById('tokenlabel').innerHTML = 'Your token is ' + receiveToken;
+    }
+    function logOut() {
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
+            window.webkit.messageHandlers.toggleMessageHandler.postMessage({
+                "type": "logout",
+                "msg": "logout successfully",
+                "token" : this.token,
+
+            });
+        }
+    }
+
+    function requestImagePermission() {
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
+            window.webkit.messageHandlers.toggleMessageHandler.postMessage({
+                "type": "imagePermission",
+                "msg": "request image permission",
+                "token" : this.token,
+            });
+
+        }
+    }
+
+   
+   
+  </script>
