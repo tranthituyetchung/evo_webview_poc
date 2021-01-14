@@ -1,0 +1,6 @@
+framework module Pods_POC_WebView_POC_WebViewUITests {
+  umbrella header "Pods-POC_WebView-POC_WebViewUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

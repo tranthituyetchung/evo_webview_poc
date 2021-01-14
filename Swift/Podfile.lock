@@ -1,0 +1,16 @@
+PODS:
+  - ESPullToRefresh (2.9.3)
+
+DEPENDENCIES:
+  - ESPullToRefresh
+
+SPEC REPOS:
+  trunk:
+    - ESPullToRefresh
+
+SPEC CHECKSUMS:
+  ESPullToRefresh: 0d68daa602b343c81753a1b95e09fd0bfcddfd40
+
+PODFILE CHECKSUM: 0deaffb571b81404b4f396ae2fa475b186920929
+
+COCOAPODS: 1.10.0

@@ -15,13 +15,29 @@
 </br>
     <div>
         <Button onclick = "logOut()">Logout</Button>      
-        <Button onclick="requestImagePermission()">Upload Photo</Button>
     </div>
+</br>
+    <input type='file' />
+    <br><img id="myImg" src="#" height=300 width=350>
+    
+    <p>Open a PDF file <a id="pdfHref" onclick="submitPDF()" href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf">example</a>.</p>
     
   </body>
 </html>
 <script>
+    // remove token and set alphamode to false when route to another web view
     var token = ""
+    var alaphamode = false // set to true after pullrefresh
+    window.addEventListener('load', function() {
+  document.querySelector('input[type="file"]').addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+          var img = document.querySelector('img');  // $('img')[0]
+          img.src = URL.createObjectURL(this.files[0]); // set src to blob url
+          img.onload = imageIsLoaded;
+      }
+    });
+    });
+
     function deleteToken(){
         print("delete Token",this.token)
         if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
@@ -32,6 +48,49 @@
             });
         }
     }
+
+    var delay = ( function() {
+    var timer = 0;
+    return function(callback, ms) {
+        clearTimeout (timer);
+        timer = setTimeout(callback, ms);
+    };
+    })();
+
+    function timeOutSession(){
+        delay(function(){
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
+            window.webkit.messageHandlers.toggleMessageHandler.postMessage({
+                "type": "outOfSession",
+                "msg" : "Your session is out",
+            });
+        }
+        }, 5000 ); // end delay
+    }
+
+    function uploadImage(base64) {
+        
+        var img = document.getElementById('img');
+        img.src = 'data:image/png;base64,' + base64;
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
+            window.webkit.messageHandlers.toggleMessageHandler.postMessage({
+                "type": "stopLoading",
+                "msg" : "Stop Loading",
+
+            });
+        }
+    }
+
+    function submitPDF(){
+       var href = document.getElementById("pdfHref").href
+       if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
+            window.webkit.messageHandlers.toggleMessageHandler.postMessage({
+                "type": "submitPDF",
+                "msg" : href,
+            });
+        }
+    }
+    
     function receiveToken(receiveToken){
         if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
             window.webkit.messageHandlers.toggleMessageHandler.postMessage({
@@ -43,6 +102,7 @@
         }
         document.getElementById('tokenlabel').innerHTML = 'Your token is ' + receiveToken;
     }
+
     function logOut() {
         if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
             window.webkit.messageHandlers.toggleMessageHandler.postMessage({
@@ -63,6 +123,7 @@
             });
 
         }
+        
     }
 
    
