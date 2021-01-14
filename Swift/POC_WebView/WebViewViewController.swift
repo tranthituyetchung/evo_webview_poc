@@ -11,60 +11,43 @@ import Photos
 import AssetsLibrary
 import ESPullToRefresh
 
-class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMessageHandler, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
-    
+class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMessageHandler, UIImagePickerControllerDelegate, WKUIDelegate, UINavigationControllerDelegate {
+    // Outlet
     @IBOutlet weak var loadingCircle: UIActivityIndicatorView!
-    @IBOutlet weak var tableview: UITableView!
-    
+    @IBOutlet weak var webviewContainer: UIView!
+    @IBOutlet weak var closeButton: UIButton!
+    @IBOutlet weak var pdfDownloadButton: UIButton!
+    @IBOutlet weak var stackView: UIStackView!
+    //
     var pdfURL: URL?
     var refreshControl = UIRefreshControl()
-    var isNavigationOut: Bool = false
     var webView: WKWebView!
     var userToken: String? = ""
+    var isSessionTimeout: Bool = false
+    //
     
-    
-    
+    // const
+    let timeOut: Double = 99999
+    let hostURL = "http://127.0.0.1:3000/"
+
     override func viewDidLoad() {
         super.viewDidLoad()
         webviewSetup()
         timeOutSession()
         indicatorSetup()
-        navigationSetup()
     }
-    
-    func navigationSetup(){
-        self.navigationItem.hidesBackButton = true
-        let newBackButton = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(WebViewViewController.back(sender:)))
-        self.navigationItem.leftBarButtonItem = newBackButton
-    }
-    
-    @objc func back(sender: UIBarButtonItem) {
-        if(webView.url?.absoluteString == "http://127.0.0.1:3000/"){
-            _ = navigationController?.popViewController(animated: true)
-        } else {
-           webView.goBack()
-        }
-    }
-    
-    @objc func sharePdf(sender: UIBarButtonItem) {
-        let pdfData = NSData(contentsOf: (self.pdfURL!))
-       
-        let activityVC = UIActivityViewController(activityItems: [pdfData!], applicationActivities: nil)
-        present(activityVC, animated: true, completion: nil)
-        
-    }
-    
+
     func indicatorSetup(){
         self.webView.addSubview(self.loadingCircle)
         self.loadingCircle.startAnimating()
-        self.webView.navigationDelegate = self
         self.loadingCircle.hidesWhenStopped = true
-        self.webView.scrollView
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         webView.evaluateJavaScript("receiveToken('\(userToken!)')", completionHandler: nil)
         loadingCircle.stopAnimating()
+        self.webView.scrollView.es.stopPullToRefresh()
+       
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
@@ -78,58 +61,54 @@ class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMess
     }
     
     func webviewSetup(){
-        webView = WKWebView()
-        webView.navigationDelegate = self
-        self.view = self.webView
+        self.isModalInPresentation = true
+        
+        webView = WKWebView(frame: webviewContainer.frame)
+        self.webView.navigationDelegate = self
+        self.webView.uiDelegate = self
+        self.webView.load(URLRequest(url: URL(string: self.hostURL)!))
+        self.webView.allowsBackForwardNavigationGestures = true
+        self.createToken()
+        self.webView.translatesAutoresizingMaskIntoConstraints = false
+        self.webView.scrollView.automaticallyAdjustsScrollIndicatorInsets = true
+        self.webviewContainer.addSubview(self.webView)
+
+        //Setup communication with Javascript
         let contentController = self.webView.configuration.userContentController
         contentController.add(self, name: "toggleMessageHandler")
-        self.webView.scrollView.es.addPullToRefresh {
-            if((self.webView.url?.absoluteString == "http://127.0.0.1:3000/" || self.webView.url?.absoluteString == nil) && self.isNavigationOut == false ) {
-                let url = URL(string: "http://127.0.0.1:3000/")! // URL of local website
-                self.webView.load(URLRequest(url: url))
-                self.webView.allowsBackForwardNavigationGestures = true
-                self.createToken() // change token after refresh
-                self.webView.translatesAutoresizingMaskIntoConstraints = false
-                self.webView.scrollView.es.stopPullToRefresh(ignoreDate: false, ignoreFooter: false)
+        
+        webView.scrollView.es.addPullToRefresh { [self] in
+            if(self.webView.url?.absoluteString == hostURL){
+                self.webView.load(URLRequest(url: URL(string: self.hostURL)!))
+                self.pdfDownloadButton.tintColor = .white
+                self.pdfDownloadButton.isEnabled = false
             } else {
-                self.webView.scrollView.es.stopPullToRefresh(ignoreDate: false, ignoreFooter: false)
-                let downloadButton = UIBarButtonItem(title: "DownLoad", style: UIBarButtonItem.Style.plain, target: self, action: #selector(WebViewViewController.sharePdf(sender:)))
-                self.navigationItem.rightBarButtonItem = downloadButton
+                self.pdfDownloadButton.tintColor = .blue
+                self.pdfDownloadButton.isEnabled = true
+                self.webView.scrollView.es.stopPullToRefresh()
             }
         }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        // send token to website when first init
-      
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         print("---Clear token---")
-        // clear token when dismiss
         webView!.evaluateJavaScript("deleteToken()", completionHandler: nil)
-        self.webView.scrollView.es.stopPullToRefresh()
-        webView.evaluateJavaScript("receiveToken('\(userToken!)')", completionHandler: nil)
-        self.isNavigationOut = true
+//        self.webView.scrollView.es.stopPullToRefresh()
     }
     
     func timeOutSession(){
-        DispatchQueue.main.asyncAfter(deadline: .now() + 999999) {
-            print("---Out of Session---")
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeOut) {
+            print("---App out of Session---")
             self.loadingCircle.startAnimating()
-            self.webView!.evaluateJavaScript("timeOutSession()", completionHandler: nil)
+            self.isSessionTimeout = true
+            self.webView!.evaluateJavaScript("logOut()", completionHandler: nil)
         }
     }
     
     func triggerRouteBack(){
         loadingCircle.stopAnimating()
-        let refreshAlert = UIAlertController(title: "Notification", message: "Your session is time out", preferredStyle: UIAlertController.Style.alert)
-        refreshAlert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action: UIAlertAction!) in
-            _ = self.navigationController?.popToRootViewController(animated: true)
-        }))
-        present(refreshAlert, animated: true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
@@ -151,41 +130,85 @@ class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMess
         case "logout":
             logOut()
         case "deletetoken":
-            print(msgRecive)
+            print()
         case "imagePermission":
             requestPermission()
         case "outOfSession":
-            triggerRouteBack()
+            // out of session from website
+            self.dismiss(animated: true, completion: nil)
         case "submitPDF":
             let fileUrl =  URL(string: msgRecive)
-            
-
             self.pdfURL = fileUrl
         default:
             print("none")
         }
     }
     
+    func backtoRoot(){
+        let previousView = UIApplication.getPresentedViewController()?.children[1] as! DashboardViewController
+        previousView.navigationController?.popViewController(animated: true)
+    }
+    
     func logOut(){
-        _ = self.navigationController?.popToRootViewController(animated: true)
+        if !self.isSessionTimeout {
+            self.dismiss(animated: true, completion: nil)
+        } else {
+            self.dismiss(animated: true, completion: backtoRoot)
+        }
     }
     
     func requestPermission(){
-        self.loadingCircle.startAnimating()
-        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-            let imagePickerController = UIImagePickerController()
-            imagePickerController.delegate = self;
-            imagePickerController.sourceType = .photoLibrary
-            self.present(imagePickerController, animated: true, completion: nil)
-            self.loadingCircle.stopAnimating()
-        }
+        PHPhotoLibrary.requestAuthorization({ (status) -> Void in
+            print(PHPhotoLibrary.authorizationStatus(),"permission")
+         })
     }
   
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-       
+    @IBAction func closeButton(_ sender: Any) {
+        if(self.webView.url?.absoluteString == hostURL){
+            print("request to logout")
+            self.webView!.evaluateJavaScript("requestLogOut()", completionHandler: nil)
+        } else {
+            webView.goBack()
+        }
     }
     
+    @IBAction func pdfDownload(_ sender: Any) {
+        let pdfData = NSData(contentsOf: (self.pdfURL!))
+        let activityVC = UIActivityViewController(activityItems: [pdfData!], applicationActivities: nil)
+        present(activityVC, animated: true, completion: nil)
+    }
+    
+    
+    func webView(_ webView: WKWebView,
+                     runJavaScriptConfirmPanelWithMessage message: String,
+                     initiatedByFrame frame: WKFrameInfo,
+                     completionHandler: @escaping (Bool) -> Void) {
 
+            let alertController = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
+
+            alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) in
+                completionHandler(true)
+            }))
+
+            alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action) in
+                completionHandler(false)
+            }))
+
+            self.present(alertController, animated: true, completion: nil)
+        }
 }
+
+
+
+extension UIApplication{
+    class func getPresentedViewController() -> UIViewController? {
+        var presentViewController = UIApplication.shared.keyWindow?.rootViewController
+        while let pVC = presentViewController?.presentedViewController
+        {
+            presentViewController = pVC
+        }
+
+        return presentViewController
+      }
+    }
 

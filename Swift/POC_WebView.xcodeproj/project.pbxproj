@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,7 @@
 		184D0FEE2583592E005FDB08 /* POC_WebViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184D0FED2583592E005FDB08 /* POC_WebViewTests.swift */; };
 		184D0FF92583592F005FDB08 /* POC_WebViewUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184D0FF82583592F005FDB08 /* POC_WebViewUITests.swift */; };
 		184D100A25836229005FDB08 /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184D100925836229005FDB08 /* WebViewViewController.swift */; };
+		34D90F3E25B024D100275ED8 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D90F3D25B024D100275ED8 /* DashboardViewController.swift */; };
 		4311C60DCA811F10A38BEB89 /* Pods_POC_WebView_POC_WebViewUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EDB7B4CF3F46A7E2D09AE5 /* Pods_POC_WebView_POC_WebViewUITests.framework */; };
 		C21AF0A9FF071FDC051A9F62 /* Pods_POC_WebView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80F3614C8CCC408F380126B7 /* Pods_POC_WebView.framework */; };
 		F1E3B509563C5E88F6F59D14 /* Pods_POC_WebViewTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 854623F3E8340C0BA6D8E675 /* Pods_POC_WebViewTests.framework */; };
@@ -55,6 +56,7 @@
 		184D0FF82583592F005FDB08 /* POC_WebViewUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POC_WebViewUITests.swift; sourceTree = "<group>"; };
 		184D0FFA2583592F005FDB08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		184D100925836229005FDB08 /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
+		34D90F3D25B024D100275ED8 /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		34FE496028C767EB3D39E4D0 /* Pods-POC_WebView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-POC_WebView.debug.xcconfig"; path = "Target Support Files/Pods-POC_WebView/Pods-POC_WebView.debug.xcconfig"; sourceTree = "<group>"; };
 		47EDB7B4CF3F46A7E2D09AE5 /* Pods_POC_WebView_POC_WebViewUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_POC_WebView_POC_WebViewUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DBE417A1FA9AF949EA029BF /* Pods-POC_WebViewTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-POC_WebViewTests.release.xcconfig"; path = "Target Support Files/Pods-POC_WebViewTests/Pods-POC_WebViewTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				184D0FE12583592E005FDB08 /* LaunchScreen.storyboard */,
 				184D0FE42583592E005FDB08 /* Info.plist */,
 				184D100925836229005FDB08 /* WebViewViewController.swift */,
+				34D90F3D25B024D100275ED8 /* DashboardViewController.swift */,
 			);
 			path = POC_WebView;
 			sourceTree = "<group>";
@@ -158,7 +161,6 @@
 				DFBA0F0E581777FB51675B1A /* Pods-POC_WebViewTests.debug.xcconfig */,
 				4DBE417A1FA9AF949EA029BF /* Pods-POC_WebViewTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -412,6 +414,7 @@
 			files = (
 				184D0FDB2583592C005FDB08 /* ViewController.swift in Sources */,
 				184D0FD72583592C005FDB08 /* AppDelegate.swift in Sources */,
+				34D90F3E25B024D100275ED8 /* DashboardViewController.swift in Sources */,
 				184D100A25836229005FDB08 /* WebViewViewController.swift in Sources */,
 				184D0FD92583592C005FDB08 /* SceneDelegate.swift in Sources */,
 			);

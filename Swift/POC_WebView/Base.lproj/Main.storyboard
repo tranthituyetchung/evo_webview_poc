@@ -69,7 +69,7 @@
                                     <color key="titleColor" red="0.94041162730000005" green="0.92706042529999999" blue="0.88425725700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <segue destination="uCo-cN-A9L" kind="push" id="Gdg-lv-bh2"/>
+                                    <segue destination="XiL-Q1-9ca" kind="push" id="XuA-ea-4Bv"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -103,39 +103,143 @@
             </objects>
             <point key="canvasLocation" x="137.68115942028987" y="71.651785714285708"/>
         </scene>
-        <!--Web View View Controller-->
+        <!--Dashboard-->
+        <scene sceneID="ig3-U8-fDI">
+            <objects>
+                <viewController id="XiL-Q1-9ca" customClass="DashboardViewController" customModule="POC_WebView" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Qof-Qj-T4V">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YoQ-hz-gZz">
+                                <rect key="frame" x="80" y="419" width="266" height="54"/>
+                                <color key="backgroundColor" systemColor="systemGreenColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="266" id="50L-dn-BYK"/>
+                                    <constraint firstAttribute="height" constant="54" id="hkm-f4-QET"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Webview"/>
+                                <connections>
+                                    <segue destination="uCo-cN-A9L" kind="presentation" modalPresentationStyle="fullScreen" id="854-Sd-5MY"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="fKn-t0-1xL"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="fKn-t0-1xL" firstAttribute="trailing" secondItem="YoQ-hz-gZz" secondAttribute="trailing" constant="68" id="CYx-m1-saD"/>
+                            <constraint firstItem="fKn-t0-1xL" firstAttribute="bottom" secondItem="YoQ-hz-gZz" secondAttribute="bottom" constant="389" id="Pgc-iF-fuh"/>
+                            <constraint firstItem="YoQ-hz-gZz" firstAttribute="top" secondItem="fKn-t0-1xL" secondAttribute="top" constant="331" id="TqX-Ty-Wzz"/>
+                            <constraint firstItem="YoQ-hz-gZz" firstAttribute="leading" secondItem="fKn-t0-1xL" secondAttribute="leading" constant="80" id="zvg-1C-nUa"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Dashboard" id="1Ie-m5-iiW"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ces-Ib-zzw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="886.95652173913049" y="61.607142857142854"/>
+        </scene>
+        <!--webviewController-->
         <scene sceneID="ckv-qF-4NM">
             <objects>
-                <viewController id="uCo-cN-A9L" customClass="WebViewViewController" customModule="POC_WebView" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="webviewController" title="webviewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="uCo-cN-A9L" customClass="WebViewViewController" customModule="POC_WebView" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="WX0-3S-5eA">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="kyg-eO-kkD">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tgi-A1-4YB">
+                                <rect key="frame" x="0.0" y="44" width="414" height="50"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="260" translatesAutoresizingMaskIntoConstraints="NO" id="8yP-nf-Zpl">
+                                        <rect key="frame" x="5" y="0.0" width="409" height="50"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="whW-8K-xlA">
+                                                <rect key="frame" x="0.0" y="0.0" width="34" height="50"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                                <state key="normal" title="X">
+                                                    <color key="titleColor" systemColor="labelColor"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="closeButton:" destination="uCo-cN-A9L" eventType="touchUpInside" id="hLR-hG-tOw"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="35C-6u-JFo">
+                                                <rect key="frame" x="294" y="0.0" width="115" height="50"/>
+                                                <state key="normal" title="Download"/>
+                                                <connections>
+                                                    <action selector="pdfDownload:" destination="uCo-cN-A9L" eventType="touchUpInside" id="8PD-8c-f5b"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="8yP-nf-Zpl" secondAttribute="bottom" id="EXz-TO-xD9"/>
+                                    <constraint firstItem="8yP-nf-Zpl" firstAttribute="leading" secondItem="Tgi-A1-4YB" secondAttribute="leading" constant="5" id="Lfp-LI-bvn"/>
+                                    <constraint firstItem="8yP-nf-Zpl" firstAttribute="top" secondItem="Tgi-A1-4YB" secondAttribute="top" id="dk0-O3-wbS"/>
+                                    <constraint firstAttribute="trailing" secondItem="8yP-nf-Zpl" secondAttribute="trailing" id="lHL-3u-QI5"/>
+                                    <constraint firstAttribute="height" constant="50" id="luT-Nb-Y86"/>
+                                </constraints>
+                            </view>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="kyg-eO-kkD">
                                 <rect key="frame" x="147" y="345" width="99" height="77"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="color" systemColor="systemPinkColor"/>
                             </activityIndicatorView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="6mx-vS-hr2">
+                                <rect key="frame" x="0.0" y="94" width="414" height="782"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3aw-6L-nU5">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="782"/>
+                                        <color key="backgroundColor" systemColor="systemGroupedBackgroundColor"/>
+                                    </view>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="nsI-zk-Z1Y"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Tgi-A1-4YB" firstAttribute="leading" secondItem="nsI-zk-Z1Y" secondAttribute="leading" id="6W3-zO-eZg"/>
+                            <constraint firstItem="6mx-vS-hr2" firstAttribute="top" secondItem="Tgi-A1-4YB" secondAttribute="bottom" id="7An-Xi-bql"/>
+                            <constraint firstItem="Tgi-A1-4YB" firstAttribute="trailing" secondItem="nsI-zk-Z1Y" secondAttribute="trailing" id="LMw-On-UnJ"/>
+                            <constraint firstItem="6mx-vS-hr2" firstAttribute="top" secondItem="Tgi-A1-4YB" secondAttribute="bottom" id="Mah-Qz-T1H"/>
+                            <constraint firstAttribute="bottom" secondItem="6mx-vS-hr2" secondAttribute="bottom" constant="20" symbolic="YES" id="V4T-mM-jPn"/>
+                            <constraint firstItem="6mx-vS-hr2" firstAttribute="trailing" secondItem="nsI-zk-Z1Y" secondAttribute="trailing" id="ZFE-hE-4vC"/>
+                            <constraint firstItem="6mx-vS-hr2" firstAttribute="leading" secondItem="nsI-zk-Z1Y" secondAttribute="leading" id="ow2-gR-7gt"/>
+                            <constraint firstItem="Tgi-A1-4YB" firstAttribute="top" secondItem="nsI-zk-Z1Y" secondAttribute="top" id="sa9-d6-Pdm"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Evb-WL-CGs"/>
                     <connections>
+                        <outlet property="closeButton" destination="whW-8K-xlA" id="xkC-Jf-e9h"/>
                         <outlet property="loadingCircle" destination="kyg-eO-kkD" id="g3p-Xd-VOZ"/>
+                        <outlet property="pdfDownloadButton" destination="35C-6u-JFo" id="g3x-VH-rCn"/>
+                        <outlet property="stackView" destination="6mx-vS-hr2" id="vdd-Us-w09"/>
+                        <outlet property="webviewContainer" destination="3aw-6L-nU5" id="JNx-vp-bgC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SAw-3o-Czw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="940.57971014492762" y="48.883928571428569"/>
+            <point key="canvasLocation" x="1847.826086956522" y="71.651785714285708"/>
         </scene>
     </scenes>
     <resources>
         <namedColor name="AccentColor">
             <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGreenColor">
+            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemGroupedBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemPinkColor">
             <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

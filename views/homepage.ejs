@@ -17,7 +17,7 @@
         <Button onclick = "logOut()">Logout</Button>      
     </div>
 </br>
-    <input type='file' />
+    <input onclick="checkPermission()" type='file' />
     <br><img id="myImg" src="#" height=300 width=350>
     
     <p>Open a PDF file <a id="pdfHref" onclick="submitPDF()" href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf">example</a>.</p>
@@ -26,20 +26,30 @@
 </html>
 <script>
     // remove token and set alphamode to false when route to another web view
-    var token = ""
-    var alaphamode = false // set to true after pullrefresh
+    var SSOToken = ""
+    var ALAPAMODE = false // set to true after pullrefresh
+
     window.addEventListener('load', function() {
-  document.querySelector('input[type="file"]').addEventListener('change', function() {
+      document.querySelector('input[type="file"]').addEventListener('change', function() {
       if (this.files && this.files[0]) {
           var img = document.querySelector('img');  // $('img')[0]
           img.src = URL.createObjectURL(this.files[0]); // set src to blob url
           img.onload = imageIsLoaded;
       }
-    });
+        });
     });
 
+    function checkPermission(){
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
+            window.webkit.messageHandlers.toggleMessageHandler.postMessage({
+                "type": "imagePermission",
+                "msg" : "check permission",
+
+            });
+        }
+    }
+
     function deleteToken(){
-        print("delete Token",this.token)
         if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
             window.webkit.messageHandlers.toggleMessageHandler.postMessage({
                 "type": "deletetoken",
@@ -57,7 +67,7 @@
     };
     })();
 
-    function timeOutSession(){
+    function WebtimeOutSession(){
         delay(function(){
         if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
             window.webkit.messageHandlers.toggleMessageHandler.postMessage({
@@ -65,7 +75,7 @@
                 "msg" : "Your session is out",
             });
         }
-        }, 5000 ); // end delay
+        }, 999999999 ); // end delay
     }
 
     function uploadImage(base64) {
@@ -90,6 +100,14 @@
             });
         }
     }
+
+    function requestLogOut(){
+        if (confirm('Are you sure to logout?')) {
+                this.logOut();
+            } else {
+                
+            }
+    }
     
     function receiveToken(receiveToken){
         if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
@@ -98,18 +116,21 @@
                 "msg" : "Receive Token",
 
             });
+            this.WebtimeOutSession()
             this.token = receiveToken
         }
+        this.ALAPAMODE = true
         document.getElementById('tokenlabel').innerHTML = 'Your token is ' + receiveToken;
     }
+
+    
 
     function logOut() {
         if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
             window.webkit.messageHandlers.toggleMessageHandler.postMessage({
                 "type": "logout",
-                "msg": "logout successfully",
-                "token" : this.token,
-
+                "msg": "Logout successfully",
+                "token" : this.SSOToken,
             });
         }
     }
@@ -126,6 +147,4 @@
         
     }
 
-   
-   
   </script>
