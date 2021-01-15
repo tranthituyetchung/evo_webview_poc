@@ -24,10 +24,11 @@ class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMess
     var webView: WKWebView!
     var userToken: String? = ""
     var isSessionTimeout: Bool = false
+    var firstLoad: Bool = false
     //
     
     // const
-    let timeOut: Double = 99999
+    let timeOut: Double = 100
     let hostURL = "http://127.0.0.1:3000/"
 
     override func viewDidLoad() {
@@ -46,6 +47,7 @@ class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMess
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         webView.evaluateJavaScript("receiveToken('\(userToken!)')", completionHandler: nil)
         loadingCircle.stopAnimating()
+        webView.evaluateJavaScript("setALAPAMODE()", completionHandler: nil)
         self.webView.scrollView.es.stopPullToRefresh()
        
     }
@@ -66,7 +68,6 @@ class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMess
         webView = WKWebView(frame: webviewContainer.frame)
         self.webView.navigationDelegate = self
         self.webView.uiDelegate = self
-        self.webView.load(URLRequest(url: URL(string: self.hostURL)!))
         self.webView.allowsBackForwardNavigationGestures = true
         self.createToken()
         self.webView.translatesAutoresizingMaskIntoConstraints = false
@@ -76,9 +77,9 @@ class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMess
         //Setup communication with Javascript
         let contentController = self.webView.configuration.userContentController
         contentController.add(self, name: "toggleMessageHandler")
-        
+       
         webView.scrollView.es.addPullToRefresh { [self] in
-            if(self.webView.url?.absoluteString == hostURL){
+            if(self.webView.url?.absoluteString == hostURL || self.webView.url?.absoluteURL == nil){
                 self.webView.load(URLRequest(url: URL(string: self.hostURL)!))
                 self.pdfDownloadButton.tintColor = .white
                 self.pdfDownloadButton.isEnabled = false
@@ -86,23 +87,36 @@ class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMess
                 self.pdfDownloadButton.tintColor = .blue
                 self.pdfDownloadButton.isEnabled = true
                 self.webView.scrollView.es.stopPullToRefresh()
+                webView.evaluateJavaScript("setALAPAMODE()", completionHandler: nil)
             }
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        print("---Clear token---")
-        webView!.evaluateJavaScript("deleteToken()", completionHandler: nil)
-//        self.webView.scrollView.es.stopPullToRefresh()
     }
     
     func timeOutSession(){
         DispatchQueue.main.asyncAfter(deadline: .now() + timeOut) {
             print("---App out of Session---")
-            self.loadingCircle.startAnimating()
-            self.isSessionTimeout = true
-            self.webView!.evaluateJavaScript("logOut()", completionHandler: nil)
+            if(self.webView.url?.absoluteString == self.hostURL){
+                self.loadingCircle.startAnimating()
+                self.isSessionTimeout = true
+                self.webView!.evaluateJavaScript("logOut()", completionHandler: nil)
+            } else {
+                // find first item in history
+                let historySize = self.webView.backForwardList.backList.count
+                let firstItem = self.webView.backForwardList.item(at: -historySize)
+                
+                // go to it!
+                self.webView.go(to: firstItem!)
+                //
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.loadingCircle.startAnimating()
+                self.isSessionTimeout = true
+                self.webView!.evaluateJavaScript("logOut()", completionHandler: nil)
+                }
+            }
         }
     }
     
@@ -129,13 +143,10 @@ class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMess
         switch type {
         case "logout":
             logOut()
-        case "deletetoken":
-            print()
         case "imagePermission":
             requestPermission()
         case "outOfSession":
-            // out of session from website
-            self.dismiss(animated: true, completion: nil)
+            self.loadingCircle.startAnimating()
         case "submitPDF":
             let fileUrl =  URL(string: msgRecive)
             self.pdfURL = fileUrl
@@ -150,6 +161,7 @@ class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMess
     }
     
     func logOut(){
+        self.loadingCircle.startAnimating()
         if !self.isSessionTimeout {
             self.dismiss(animated: true, completion: nil)
         } else {
@@ -187,6 +199,7 @@ class WebViewViewController: UIViewController,WKNavigationDelegate, WKScriptMess
             let alertController = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
 
             alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) in
+                self.loadingCircle.startAnimating()
                 completionHandler(true)
             }))
 

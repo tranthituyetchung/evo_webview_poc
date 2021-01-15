@@ -13,9 +13,6 @@
      <label id="tokenlabel"></label>
     </div>
 </br>
-    <div>
-        <Button onclick = "logOut()">Logout</Button>      
-    </div>
 </br>
     <input onclick="checkPermission()" type='file' />
     <br><img id="myImg" src="#" height=300 width=350>
@@ -49,16 +46,6 @@
         }
     }
 
-    function deleteToken(){
-        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
-            window.webkit.messageHandlers.toggleMessageHandler.postMessage({
-                "type": "deletetoken",
-                "msg" : "Delete token successfully",
-
-            });
-        }
-    }
-
     var delay = ( function() {
     var timer = 0;
     return function(callback, ms) {
@@ -67,16 +54,7 @@
     };
     })();
 
-    function WebtimeOutSession(){
-        delay(function(){
-        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
-            window.webkit.messageHandlers.toggleMessageHandler.postMessage({
-                "type": "outOfSession",
-                "msg" : "Your session is out",
-            });
-        }
-        }, 999999999 ); // end delay
-    }
+  
 
     function uploadImage(base64) {
         
@@ -101,6 +79,10 @@
         }
     }
 
+    function setALAPAMODE (){
+       this.ALAPAMODE = true
+    }
+
     function requestLogOut(){
         if (confirm('Are you sure to logout?')) {
                 this.logOut();
@@ -116,7 +98,16 @@
                 "msg" : "Receive Token",
 
             });
-            this.WebtimeOutSession()
+          
+            setTimeout(function(){ 
+                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
+                window.webkit.messageHandlers.toggleMessageHandler.postMessage({
+                    "type": "outOfSession",
+                    "msg" : "Your Web session is out",
+                });
+                this.logOut()
+                }
+             }, 50000);
             this.token = receiveToken
         }
         this.ALAPAMODE = true
@@ -126,13 +117,15 @@
     
 
     function logOut() {
+        setTimeout(function(){ 
         if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.toggleMessageHandler) {
             window.webkit.messageHandlers.toggleMessageHandler.postMessage({
                 "type": "logout",
-                "msg": "Logout successfully",
+                "msg": "FINISH LOGOUT API",
                 "token" : this.SSOToken,
             });
         }
+     }, 3000);
     }
 
     function requestImagePermission() {
